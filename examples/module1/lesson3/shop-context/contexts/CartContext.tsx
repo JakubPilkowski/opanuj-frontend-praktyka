@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useEffect, useState } from 'react';
 import { CartItem } from '../types/CartItem';
 import { Product } from '../types/Product';
 
@@ -35,21 +35,25 @@ const CartProvider = ({ children }: { children: React.ReactNode }) => {
     setItemAmount(amount);
   }, [cart]);
 
-  const addToCart = (product: Product | CartItem) => {
-    const cartItem = cart.find((item) => {
-      return item.id === product.id;
-    });
+  const addToCart = useCallback((product: Product | CartItem) => {
+    setCart((prev) => {
+      const cartItem = prev.find((item) => {
+        return item.id === product.id;
+      });
 
-    if (cartItem) {
-      const newCart = cart.map((item) =>
-        item.id === product.id ? { ...item, amount: cartItem.amount + 1 } : item
-      );
-      setCart(newCart);
-    } else {
-      const newItem = { ...product, amount: 1 };
-      setCart([...cart, newItem]);
-    }
-  };
+      if (cartItem) {
+        const newCart = prev.map((item) =>
+          item.id === product.id
+            ? { ...item, amount: cartItem.amount + 1 }
+            : item
+        );
+        return newCart;
+      } else {
+        const newItem = { ...product, amount: 1 };
+        return [...prev, newItem];
+      }
+    });
+  }, []);
 
   const decreaseAmount = (id: number) => {
     const cartItem = cart.find((item) => item.id === id);

@@ -1,15 +1,16 @@
-import { useContext } from 'react';
+import useCartService from '../services/useCartService';
+
+import { Link } from 'react-router-dom';
+
 import { BsBag } from 'react-icons/bs';
 import { CiShop } from 'react-icons/ci';
-import { Link } from 'react-router-dom';
-import { CartContext } from '../contexts/CartContext';
 
 interface HeaderProps {
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Header = ({ setIsSidebarOpen }: HeaderProps) => {
-  const { itemAmount } = useContext(CartContext);
+  const { amount } = useCartService();
 
   return (
     <header className={`bg-none py-6 fixed w-full z-10 lg:px-8 transition-all`}>
@@ -23,7 +24,7 @@ const Header = ({ setIsSidebarOpen }: HeaderProps) => {
         >
           <BsBag className="text-2xl" />
           <div className="bg-red-500 absolute -right-2 -bottom-2 text-[12px] w-[18px] h-[18px] text-white rounded-full flex justify-center items-center">
-            {itemAmount}
+            {amount}
           </div>
         </div>
       </div>

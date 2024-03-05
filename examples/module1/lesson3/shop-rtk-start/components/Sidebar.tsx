@@ -1,18 +1,12 @@
-import React, { useContext } from 'react';
+import React from 'react';
+
+import useCartService from '../services/useCartService';
 
 import { Link } from 'react-router-dom';
+import CartItem from './CartItem';
 
 import { FiTrash2 } from 'react-icons/fi';
 import { IoMdClose } from 'react-icons/io';
-
-import { CartContext } from '../contexts/CartContext';
-import { useAppDispatch, useAppSelector } from '../hooks/rtk';
-import {
-  clearCart,
-  selectCartItems,
-  selectItemAmount,
-} from '../state/cartSlice';
-import CartItem from './CartItem';
 
 interface SidebarProps {
   isSidebarOpen: boolean;
@@ -20,10 +14,7 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
-  const { total } = useContext(CartContext);
-  const dispatch = useAppDispatch();
-  const cartItems = useAppSelector(selectCartItems);
-  const itemAmount = useAppSelector(selectItemAmount);
+  const { amount, items, totalPrice, clear } = useCartService();
 
   return (
     <div
@@ -33,7 +24,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
     >
       <div className="flex items-center justify-between py-6 border-b">
         <div className="uppercase text-sm font-semibold">
-          Shopping Bag ({itemAmount})
+          Shopping Bag ({amount})
         </div>
         <div
           onClick={() => setIsSidebarOpen(false)}
@@ -43,17 +34,17 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
         </div>
       </div>
       <div className="flex flex-col gap-y-2 h-[360px] md:h-[480px] lg:h-[420px] overflow-y-auto overflow-x-hidden border-b">
-        {cartItems.map((item) => {
+        {items.map((item) => {
           return <CartItem item={item} key={item.id} />;
         })}
       </div>
       <div className="flex flex-col gap-y-3  mt-4">
         <div className="flex w-full justify-between items-center">
           <div className="font-semibold">
-            <span className="mr-2">Subtotal:</span> $ {total.toFixed(2)}
+            <span className="mr-2">Subtotal:</span> $ {totalPrice.toFixed(2)}
           </div>
           <div
-            onClick={() => dispatch(clearCart())}
+            onClick={clear}
             className="cursor-pointer py-4 bg-red-500 text-white w-12 h-12 flex justify-center items-center text-xl"
           >
             <FiTrash2 />

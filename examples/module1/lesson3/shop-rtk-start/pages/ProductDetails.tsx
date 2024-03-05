@@ -1,18 +1,18 @@
-import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { CartContext } from '../contexts/CartContext';
-import { ProductContext } from '../contexts/ProductContext';
+import useProductService from '../services/useProductService';
+import useCartService from '../services/useCartService';
+
+import LoadingFromPromise from '../components/LoadingFromPromise';
+import Spinner from '../components/spinner/Spinner';
 
 const ProductDetails = () => {
   const { id } = useParams();
-  const { addToCart } = useContext(CartContext);
-  const { products } = useContext(ProductContext);
-
-  const product = products.find((item) => {
-    return item.id === parseInt(id!);
+  const { add } = useCartService();
+  const { data, isLoading, error } = useProductService({
+    productId: parseInt(id || ''),
   });
 
-  if (!product) {
+  if (isLoading) {
     return (
       <section className="h-screen flex justify-center items-center">
         Loading...
@@ -20,7 +20,16 @@ const ProductDetails = () => {
     );
   }
 
-  const { title, price, description, image } = product;
+  if (error || !data) {
+    return <div>Error</div>;
+  }
+
+  const { title, price, description, image } = data;
+
+  const handleAdd = async () => {
+    add(data);
+  };
+
   return (
     <section className="pt-[450px] md:pt-32 pb-[400px] md:pb-12 lg:py-32 h-screen flex items-center">
       <div className="container mx-auto">
@@ -36,12 +45,17 @@ const ProductDetails = () => {
               $ {price}
             </div>
             <p className="mb-8">{description}</p>
-            <button
-              onClick={() => addToCart(product)}
-              className="bg-green-600 py-4 px-8 text-white"
-            >
-              Add to cart
-            </button>
+            <LoadingFromPromise
+              callback={handleAdd}
+              renderContent={(callback, isLoading) => (
+                <button
+                  onClick={callback}
+                  className="bg-green-600 py-4 px-8 text-white"
+                >
+                  {isLoading ? <Spinner /> : 'Add to cart'}
+                </button>
+              )}
+            />
           </div>
         </div>
       </div>

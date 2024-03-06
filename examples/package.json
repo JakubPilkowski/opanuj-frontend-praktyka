@@ -44,7 +44,8 @@
     "tailwindcss-animate": "^1.0.7",
     "uuid": "9.0.1",
     "vite-plugin-html": "3.2.2",
-    "xstate": "^5.9.1"
+    "xstate": "^5.9.1",
+    "zod": "3.22.4"
   },
   "devDependencies": {
     "@nitedani/vite-plugin-angular": "^17.0.11",
@@ -56,8 +57,12 @@
     "@types/node": "^20.11.16",
     "@types/react": "18.2.54",
     "@types/react-dom": "18.2.18",
+    "@typescript-eslint/eslint-plugin": "^7.1.0",
+    "@typescript-eslint/parser": "^7.1.0",
     "@vitejs/plugin-react": "4.2.1",
     "autoprefixer": "^10.4.17",
+    "eslint": "^8.57.0",
+    "eslint-plugin-playwright": "^1.5.1",
     "glob": "10.3.10",
     "jsdom": "24.0.0",
     "postcss": "^8.4.35",

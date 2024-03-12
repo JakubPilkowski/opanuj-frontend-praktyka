@@ -1,8 +1,5 @@
 import { z } from 'zod';
 
-const form = document.querySelector('#flight-form') as HTMLFormElement;
-const errors = document.querySelector('#errors') as HTMLUListElement;
-
 const dateStringSchema = (name: string) =>
   z
     .string({})
@@ -42,7 +39,7 @@ const futureOrCurrentDateSchema = (
   return z.coerce.date().min(date, message);
 };
 
-const flightSchema = z
+export const flightSchema = z
   .object({
     origin: z.string().min(1, { message: 'Origin is required' }),
     destination: z.string().min(1, { message: 'Destination is required' }),
@@ -93,32 +90,17 @@ const flightSchema = z
           ctx.addIssue({ ...issue, path: ['endDate'] });
         }
       }
+
+      return z.NEVER;
     }
   });
 
-form.addEventListener('submit', (event) => {
-  event.preventDefault();
-  const formData = new FormData(form);
+export type Flight = z.infer<typeof flightSchema>;
 
-  const formDataObject = Object.fromEntries(formData.entries());
-
-  const result = flightSchema
-    .transform((data) => {
-      if (data.trip === 'one-way') {
-        data.endDate = '';
-      }
-
-      return data;
-    })
-    .safeParse(formDataObject);
-
-  errors.innerHTML = '';
-
-  if (!result.success) {
-    for (const issue of result.error.issues) {
-      const errorItem = document.createElement('li');
-      errorItem.textContent = issue.message;
-      errors.appendChild(errorItem);
-    }
-  }
-});
+export const flightDefaultValue: Flight = {
+  origin: '',
+  destination: '',
+  trip: 'one-way',
+  startDate: '',
+  endDate: '',
+};

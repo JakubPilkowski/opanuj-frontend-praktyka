@@ -1,8 +1,9 @@
-import { defineConfig } from 'vitest/config';
+import { configDefaults, defineConfig } from 'vitest/config';
+
+const PLAYWRIGHT_TESTS = ['**/*.spec.ts'];
 
 export default defineConfig({
   test: {
-    environment: 'jsdom',
-    setupFiles: ['vitest.setup.ts'],
+    exclude: [...configDefaults.exclude, ...PLAYWRIGHT_TESTS],
   },
 });

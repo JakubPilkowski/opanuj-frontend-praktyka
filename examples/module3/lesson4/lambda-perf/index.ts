@@ -14,7 +14,7 @@ interface LambdaResponse {
   statusCode: number;
   body: string;
 }
-
+  
 const cloudWatchClient = new CloudWatchClient({ region: 'eu-central-1' });
 
 export const handler: Handler<EventInput, LambdaResponse> = async (event) => {
